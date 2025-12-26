@@ -1,20 +1,33 @@
-import z from "zod";
+import { z } from "zod";
 
+//login
 export const loginSchema = z.object({
-    email: z.email({ message: "Enter a valid email" }),
-    password: z.string().min(6, { message: "Minimum 6 characters" }),
+    email: z.string().email("Please provide a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export type LoginData = z.infer<typeof loginSchema>;
 
-export const registerSchema = z.object({
-    name: z.string().min(2, { message: "Enter your name" }),
-    email: z.email({ message: "Enter a valid email" }),
-    password: z.string().min(6, { message: "Minimum 6 characters" }),
-    confirmPassword: z.string().min(6, { message: "Minimum 6 characters" }),
-}).refine((v) => v.password === v.confirmPassword, {
-        path: ["confirmPassword"],
-        message: "Passwords do not match",
-});
+//registre
+const passwordRule = z
+    .string()
+    .min(6, "Password must be at least 6 characters");
+
+export const registerSchema = z
+    .object({
+        name: z.string().min(2, "Name is too short"),
+        email: z.string().email("Please provide a valid email address"),
+        password: passwordRule,
+        confirmPassword: passwordRule,
+    })
+    .superRefine((data, ctx) => {
+        if (data.password !== data.confirmPassword) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["confirmPassword"],
+                message: "Passwords do not match",
+            });
+        }
+    });
 
 export type RegisterData = z.infer<typeof registerSchema>;
