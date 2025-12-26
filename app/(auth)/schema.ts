@@ -16,7 +16,7 @@ const passwordRule = z
 export const registerSchema = z
     .object({
         name: z.string().min(2, "Name is too short"),
-        email: z.string().email("Please provide a valid email address"),
+        email: z.string().email("Please provide valid email address"),
         password: passwordRule,
         confirmPassword: passwordRule,
     })
