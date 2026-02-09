@@ -36,6 +36,10 @@ export default function LoginForm() {
             return;
         }
 
+        if (data?.user) {
+            localStorage.setItem("auth_user", JSON.stringify(data.user));
+        }
+
         router.push("/dashboard");
     };
 

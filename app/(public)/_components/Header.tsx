@@ -8,6 +8,7 @@ import ThemeToggle from "./ThemeToggle";
 const LINKS = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/profile", label: "Profile" },
 ];
 
 export default function Header() {

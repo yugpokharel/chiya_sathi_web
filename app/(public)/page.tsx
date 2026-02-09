@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Home() {
   return (
     <main className="relative overflow-hidden">
@@ -19,8 +21,8 @@ export default function Home() {
 
             <div className="space-y-4">
               <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                Sip, chat, and unwind
-                <span className="block text-amber-700">your tea corner is here.</span>
+                Sit, order, relax
+                <span className="block text-amber-700">your classic tea ritual, reimagined.</span>
               </h1>
               <p className="max-w-xl text-base text-foreground/70 sm:text-lg">
                 Discover fresh brews, curated snacks, and a calm place to
@@ -68,6 +70,15 @@ export default function Home() {
             <div className="absolute -left-6 top-10 h-24 w-24 rounded-3xl bg-amber-200/80 shadow-lg animate-float" />
             <div className="absolute -right-8 bottom-6 h-32 w-32 rounded-full bg-emerald-200/70 shadow-lg animate-float-slow" />
             <div className="rounded-3xl border border-black/10 bg-white/90 p-6 shadow-xl backdrop-blur">
+              <div className="mb-6 overflow-hidden rounded-2xl border border-black/10 bg-[#F8F5EF] p-4">
+                <Image
+                  src="/classic-tea.svg"
+                  alt="Classic tea"
+                  width={720}
+                  height={520}
+                  className="h-56 w-full object-contain"
+                />
+              </div>
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
