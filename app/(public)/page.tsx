@@ -1,9 +1,223 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="  ">
-      Home
-    </div>
+    <main className="relative overflow-hidden">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute -left-32 top-24 h-72 w-72 rounded-full bg-amber-200/50 blur-3xl" />
+        <div className="absolute right-[-10rem] top-0 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="absolute bottom-[-12rem] left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-orange-200/40 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.9),rgba(255,255,255,0))]" />
+      </div>
+
+      <section className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 shadow-sm">
+              ChiyaSathi
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              Warm moments, fast
+            </div>
+
+            <div className="space-y-4">
+              <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                Sip, chat, and unwind
+                <span className="block text-amber-700">your tea corner is here.</span>
+              </h1>
+              <p className="max-w-xl text-base text-foreground/70 sm:text-lg">
+                Discover fresh brews, curated snacks, and a calm place to
+                connect. Order for pickup or delivery in minutes.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/register"
+                className="inline-flex h-12 items-center justify-center rounded-md bg-amber-600 px-6 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+              >
+                Get started
+              </a>
+              <a
+                href="/about"
+                className="inline-flex h-12 items-center justify-center rounded-md border border-black/10 bg-white/80 px-6 text-sm font-semibold text-foreground shadow-sm transition hover:bg-white"
+              >
+                Explore the menu
+              </a>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-3">
+              {[
+                { label: "Daily brews", value: "2,500+" },
+                { label: "Avg. delivery", value: "15 min" },
+                { label: "Tea blends", value: "40+" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-black/5 bg-white/80 p-4 shadow-sm"
+                >
+                  <p className="text-2xl font-semibold text-foreground">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-foreground/50">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -left-6 top-10 h-24 w-24 rounded-3xl bg-amber-200/80 shadow-lg animate-float" />
+            <div className="absolute -right-8 bottom-6 h-32 w-32 rounded-full bg-emerald-200/70 shadow-lg animate-float-slow" />
+            <div className="rounded-3xl border border-black/10 bg-white/90 p-6 shadow-xl backdrop-blur">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-foreground/50">
+                      Today at ChiyaSathi
+                    </p>
+                    <p className="text-lg font-semibold text-foreground">
+                      Spiced Milk Tea
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                    New
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    "Cinnamon, cardamom, and clove",
+                    "Oat milk or dairy",
+                    "Lightly sweetened",
+                  ].map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-sm text-foreground/70">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-2xl bg-amber-50 p-4">
+                  <p className="text-sm font-semibold text-foreground">
+                    Ready in 8 minutes
+                  </p>
+                  <p className="text-xs text-foreground/60">
+                    Order now and pick up at your closest stall.
+                  </p>
+                </div>
+
+                <button className="h-12 w-full rounded-md bg-foreground text-sm font-semibold text-background hover:opacity-90">
+                  Quick order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-3">
+          {[
+            {
+              title: "Curated blends",
+              description:
+                "Seasonal herbs, slow-steeped leaves, and barista-grade attention.",
+            },
+            {
+              title: "Neighborhood pickup",
+              description:
+                "Grab your cup from nearby stalls with live preparation updates.",
+            },
+            {
+              title: "Friends and rewards",
+              description:
+                "Earn points, unlock perks, and share your favorite blends.",
+            },
+          ].map((card, index) => (
+            <div
+              key={card.title}
+              className="rounded-2xl border border-black/5 bg-white/80 p-6 shadow-sm animate-fade-up"
+              style={{ animationDelay: `${index * 120}ms` }}
+            >
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+                  <path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 2a7 7 0 1 0 .001 14.001A7 7 0 0 0 12 5Zm-1 3h2v4.25l3.25 1.9-1 1.73L11 13V8Z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">
+                {card.title}
+              </h3>
+              <p className="mt-2 text-sm text-foreground/65">
+                {card.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-black/10 bg-gradient-to-r from-amber-50 via-white to-emerald-50 p-8 shadow-sm">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-foreground/50">
+                How it works
+              </p>
+              <h2 className="text-3xl font-semibold text-foreground">
+                From order to first sip in three steps.
+              </h2>
+              <p className="text-sm text-foreground/70">
+                Pick a blend, customize it, and track your tea as it brews.
+              </p>
+            </div>
+
+            <div className="space-y-5">
+              {[
+                "Choose a brew from the curated list.",
+                "Add your milk, sugar, and spice level.",
+                "Collect or deliver with live tracking.",
+              ].map((step, index) => (
+                <div
+                  key={step}
+                  className="flex items-start gap-4 rounded-2xl border border-black/5 bg-white p-4 shadow-sm"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-sm font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm text-foreground/70">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-foreground px-8 py-12 text-background">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="space-y-4">
+              <h2 className="text-3xl font-semibold">
+                Ready to share a cup?
+              </h2>
+              <p className="text-sm text-background/70">
+                Create your account and start collecting rewards on every brew.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <a
+                href="/register"
+                className="inline-flex h-12 items-center justify-center rounded-md bg-amber-500 px-6 text-sm font-semibold text-foreground"
+              >
+                Create account
+              </a>
+              <a
+                href="/login"
+                className="inline-flex h-12 items-center justify-center rounded-md border border-white/20 px-6 text-sm font-semibold text-white/90"
+              >
+                I already have one
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

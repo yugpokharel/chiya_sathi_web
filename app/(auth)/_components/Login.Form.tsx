@@ -43,7 +43,7 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit(submit)} className="space-y-8">
             <div className="space-y-2">
                 <label
-                    className="text-xs uppercase tracking-[0.2em] text-foreground/50"
+                    className="text-xs uppercase tracking-[0.2em] text-black/60"
                     htmlFor="email"
                 >
                     Email address
@@ -53,7 +53,7 @@ export default function LoginForm() {
                         id="email"
                         type="email"
                         autoComplete="email"
-                        className="h-12 w-full border-b border-black/20 bg-transparent pr-10 text-base outline-none transition-colors placeholder:text-foreground/30 focus:border-orange-500"
+                        className="h-12 w-full border-b border-black/20 bg-transparent pr-10 text-base text-black outline-none transition-colors placeholder:text-black/40 focus:border-orange-500"
                         {...register("email")}
                         placeholder="Enter your email"
                     />
@@ -70,7 +70,7 @@ export default function LoginForm() {
 
             <div className="space-y-2">
                 <label
-                    className="text-xs uppercase tracking-[0.2em] text-foreground/50"
+                    className="text-xs uppercase tracking-[0.2em] text-black/60"
                     htmlFor="password"
                 >
                     Password
@@ -80,14 +80,14 @@ export default function LoginForm() {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
-                        className="h-12 w-full border-b border-black/20 bg-transparent pr-10 text-base outline-none transition-colors placeholder:text-foreground/30 focus:border-orange-500"
+                        className="h-12 w-full border-b border-black/20 bg-transparent pr-10 text-base text-black outline-none transition-colors placeholder:text-black/40 focus:border-orange-500"
                         {...register("password")}
                         placeholder="Enter password"
                     />
                     <button
                         type="button"
                         onClick={() => setShowPassword((value) => !value)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground/70"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-black/40 hover:text-black/70"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                         {showPassword ? (
@@ -118,7 +118,7 @@ export default function LoginForm() {
                 {isSubmitting ? "Signing in..." : "Sign in"}
             </button>
 
-            <div className="text-center text-sm text-foreground/60">
+            <div className="text-center text-sm text-black/60">
                 Don&apos;t have an account?{" "}
                 <Link href="/register" className="font-semibold text-orange-600 hover:underline">
                     Create new account
