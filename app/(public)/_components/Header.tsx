@@ -26,14 +26,14 @@ export default function Header() {
     }, [pathname]);
 
     return (
-        <header className="sticky top-0 z-50 border-b border-black/10 dark:border-white/10 bg-background/70 backdrop-blur">
+        <header className="sticky top-0 z-50 border-b border-black/10 bg-white text-black shadow-sm">
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
-                    <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-background">
-                            M
+                    <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight text-black">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-600 text-white">
+                            C
                         </span>
-                        <span className="hidden sm:block">MyApp</span>
+                        <span className="hidden sm:block">ChiyaSathi</span>
                     </Link>
 
                     <div className="hidden md:flex items-center gap-6 justify-self-center">
@@ -44,8 +44,8 @@ export default function Header() {
                                 className={
                                     "text-sm font-medium transition-colors " +
                                     (activeMap[link.href]
-                                        ? "text-foreground"
-                                        : "text-foreground/60 hover:text-foreground")
+                                        ? "text-black"
+                                        : "text-black/70 hover:text-black")
                                 }
                             >
                                 {link.label}
@@ -57,13 +57,13 @@ export default function Header() {
                         <div className="hidden sm:flex items-center gap-2">
                             <Link
                                 href="/login"
-                                className="h-9 rounded-md border border-black/10 dark:border-white/15 px-3 text-sm font-medium hover:bg-foreground/5"
+                                className="h-9 rounded-md border border-black/10 px-3 text-sm font-medium text-black hover:bg-black/5"
                             >
                                 Log in
                             </Link>
                             <Link
                                 href="/register"
-                                className="h-9 rounded-md bg-foreground px-3 text-sm font-semibold text-background hover:opacity-90"
+                                className="h-9 rounded-md bg-white px-3 text-sm font-semibold text-black hover:bg-black/5"
                             >
                                 Sign up
                             </Link>
@@ -74,7 +74,7 @@ export default function Header() {
                         <button
                             aria-expanded={menuOpen}
                             onClick={() => setMenuOpen((v) => !v)}
-                            className="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-black/10 dark:border-white/15 hover:bg-foreground/5"
+                            className="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-black/10 text-black hover:bg-black/5"
                         >
                             {menuOpen ? (
                                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
@@ -95,7 +95,7 @@ export default function Header() {
                         (menuOpen ? "max-h-80" : "max-h-0")
                     }
                 >
-                    <div className="border-t border-black/10 dark:border-white/10 py-3">
+                    <div className="border-t border-black/10 py-3">
                         <div className="flex flex-col gap-1">
                             {LINKS.map((link) => (
                                 <Link
@@ -103,10 +103,10 @@ export default function Header() {
                                     href={link.href}
                                     onClick={() => setMenuOpen(false)}
                                     className={
-                                        "rounded-md px-2 py-2 text-sm font-medium hover:bg-foreground/5 " +
+                                        "rounded-md px-2 py-2 text-sm font-medium text-black/80 hover:bg-black/5 " +
                                         (activeMap[link.href]
-                                            ? "text-foreground"
-                                            : "text-foreground/70")
+                                            ? "text-black"
+                                            : "text-black/70")
                                     }
                                 >
                                     {link.label}
@@ -116,13 +116,13 @@ export default function Header() {
                             <div className="mt-2 flex gap-2">
                                 <Link
                                     href="/login"
-                                    className="flex-1 h-9 rounded-md border border-black/10 dark:border-white/15 text-sm font-medium flex items-center justify-center hover:bg-foreground/5"
+                                    className="flex-1 h-9 rounded-md border border-black/10 text-sm font-medium text-black flex items-center justify-center hover:bg-black/5"
                                 >
                                     Log in
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="flex-1 h-9 rounded-md bg-foreground text-background text-sm font-semibold flex items-center justify-center hover:opacity-90"
+                                    className="flex-1 h-9 rounded-md bg-white text-black text-sm font-semibold flex items-center justify-center hover:bg-black/5"
                                 >
                                     Sign up
                                 </Link>

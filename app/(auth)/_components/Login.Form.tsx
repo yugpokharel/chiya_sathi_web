@@ -40,7 +40,7 @@ export default function LoginForm() {
             localStorage.setItem("auth_user", JSON.stringify(data.user));
         }
 
-        router.push("/dashboard");
+        router.push("/menu");
     };
 
     return (
