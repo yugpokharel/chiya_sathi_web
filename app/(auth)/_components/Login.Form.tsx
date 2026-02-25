@@ -38,9 +38,12 @@ export default function LoginForm() {
 
         if (data?.user) {
             localStorage.setItem("auth_user", JSON.stringify(data.user));
+            localStorage.setItem("auth_token", data.token ?? "");
+            localStorage.setItem("userRole", data.user.role ?? "customer");
         }
 
-        router.push("/menu");
+        const role = data?.user?.role ?? "customer";
+        router.push(role === "owner" ? "/owner" : "/customer");
     };
 
     return (

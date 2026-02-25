@@ -13,9 +13,11 @@ export async function POST(request: Request) {
         );
     }
 
-    const formData = new FormData();    
+    const formData = new FormData();
     for (const [key, value] of incoming.entries()) {
-        formData.append(key, value);
+        if (key !== "confirmPassword") {
+            formData.append(key, value);
+        }
     }
 
     let response: Response;

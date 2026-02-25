@@ -58,5 +58,5 @@ export async function POST(request: Request) {
         });
     }
 
-    return NextResponse.json({ ok: true, user: data?.data ?? null });
+    return NextResponse.json({ ok: true, user: data?.data ?? null, token: data?.token ?? null });
 }

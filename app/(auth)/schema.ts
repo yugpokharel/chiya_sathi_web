@@ -21,9 +21,11 @@ export const registerSchema = z
         email: z.string().email("Please provide valid email address"),
         password: passwordRule,
         confirmPassword: passwordRule,
-        profilePicture: z.instanceof(File, {
-            message: "Please select a profile picture",
-        }),
+        profilePicture: z
+            .instanceof(File)
+            .optional(),
+        cafeName: z.string().optional(),
+        cafeAddress: z.string().optional(),
     })
     .superRefine((data, ctx) => {
         if (data.password !== data.confirmPassword) {
