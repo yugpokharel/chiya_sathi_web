@@ -1,12 +1,13 @@
 import RegisterForm from "../_components/Register.Form";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Page() {
     return (
         <section className="w-full space-y-10">
             <header className="flex items-center justify-between">
                 <Link
-                    href="/"
+                    href="/role-select"
                     className="flex h-10 w-10 items-center justify-center rounded-full text-black/70 hover:bg-black/5"
                     aria-label="Go back"
                 >
@@ -24,7 +25,9 @@ export default function Page() {
                 </h2>
             </div>
 
-            <RegisterForm />
+            <Suspense fallback={<div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-600" /></div>}>
+                <RegisterForm />
+            </Suspense>
         </section>
     );
 }
