@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useMemo } from "react";
 import ThemeToggle from "./ThemeToggle";
@@ -30,9 +31,7 @@ export default function Header() {
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
                     <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight text-black">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-600 text-white">
-                            C
-                        </span>
+                        <Image src="/logo.png" alt="ChiyaSathi" width={32} height={32} className="h-8 w-8 rounded-md object-contain" />
                         <span className="hidden sm:block">ChiyaSathi</span>
                     </Link>
 
@@ -62,7 +61,7 @@ export default function Header() {
                                 Log in
                             </Link>
                             <Link
-                                href="/register"
+                                href="/role-select"
                                 className="h-9 rounded-md bg-white px-3 text-sm font-semibold text-black hover:bg-black/5"
                             >
                                 Sign up
@@ -121,7 +120,7 @@ export default function Header() {
                                     Log in
                                 </Link>
                                 <Link
-                                    href="/register"
+                                    href="/role-select"
                                     className="flex-1 h-9 rounded-md bg-white text-black text-sm font-semibold flex items-center justify-center hover:bg-black/5"
                                 >
                                     Sign up

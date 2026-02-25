@@ -38,7 +38,7 @@ export default function Home() {
                 Get started
               </a>
               <a
-                href="/about"
+                href="/role-select"
                 className="inline-flex h-12 items-center justify-center rounded-md border border-black/10 bg-white/90 px-6 text-sm font-semibold text-[#1b1b1b] shadow-sm transition hover:bg-white"
               >
                 Explore the menu
@@ -116,9 +116,9 @@ export default function Home() {
                   </p>
                 </div>
 
-                <button className="h-12 w-full rounded-md bg-[#1b1b1b] text-sm font-semibold text-white hover:opacity-90">
+                <a href="/login" className="flex h-12 w-full items-center justify-center rounded-md bg-[#1b1b1b] text-sm font-semibold text-white hover:opacity-90">
                   Quick order
-                </button>
+                </a>
               </div>
             </div>
           </div>
