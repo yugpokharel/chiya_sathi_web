@@ -42,6 +42,10 @@ html {
   .animate-float-slow {
     animation: float 9s ease-in-out infinite;
   }
+
+  .animate-slide-up {
+    animation: slide-up 300ms ease both;
+  }
 }
 
 @keyframes fade-up {
@@ -62,5 +66,16 @@ html {
   }
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

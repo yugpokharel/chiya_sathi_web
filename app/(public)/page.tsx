@@ -32,7 +32,7 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-3">
               <a
-                href="/register"
+                href="/role-select"
                 className="inline-flex h-12 items-center justify-center rounded-md bg-amber-600 px-6 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
               >
                 Get started
@@ -214,7 +214,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <a
-                href="/register"
+                href="/role-select"
                 className="inline-flex h-12 items-center justify-center rounded-md bg-amber-500 px-6 text-sm font-semibold text-foreground"
               >
                 Create account
