@@ -1,8 +1,8 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://192.168.1.5:5000/api";
-export const BACKEND_ORIGIN = process.env.NEXT_PUBLIC_BACKEND_ORIGIN ?? "http://192.168.1.5:5000";
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://192.168.1.4:5000/api";
+export const BACKEND_ORIGIN = process.env.NEXT_PUBLIC_BACKEND_ORIGIN ?? "http://192.168.1.4:5000";
 
 // Server-side only
-export const SERVER_API_BASE = process.env.API_BASE_URL ?? "http://192.168.1.5:5000/api";
+export const SERVER_API_BASE = process.env.API_BASE_URL ?? "http://192.168.1.4:5000/api";
 
 export const CATEGORIES = ["Tea", "Coffee", "Cigarette", "Snacks"] as const;
 

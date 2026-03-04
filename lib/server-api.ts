@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const SERVER_API_BASE =
-  process.env.API_BASE_URL ?? "http://192.168.1.5:5000/api";
+  process.env.API_BASE_URL ?? "http://192.168.1.4:5000/api";
 
 export async function getAuthToken(): Promise<string | null> {
   const cookieStore = await cookies();
