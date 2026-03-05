@@ -3,8 +3,19 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { imageUrl, CATEGORY_ICONS } from "@/lib/constants";
-import type { MenuItem, CartItem } from "@/lib/types";
+import type { MenuItem, CartItem, Order } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
+
+/** Extract a human-readable error message from any API response */
+async function extractError(res: Response, fallback: string): Promise<string> {
+    try {
+        const data = await res.json();
+        if (typeof data?.message === "string") return data.message;
+    } catch {
+        /* response wasn't JSON (maybe HTML 404 page) */
+    }
+    return `${fallback} (${res.status})`;
+}
 
 export default function CategoryMenuPage({
     params,
@@ -20,7 +31,9 @@ export default function CategoryMenuPage({
     const [cart, setCart] = useState<CartItem[]>([]);
     const [submitting, setSubmitting] = useState(false);
     const [note, setNote] = useState("");
+    const [activeOrder, setActiveOrder] = useState<Order | null>(null);
 
+    /* ── Fetch menu items ─────────────────────── */
     useEffect(() => {
         const fetchMenu = async () => {
             try {
@@ -44,6 +57,26 @@ export default function CategoryMenuPage({
         fetchMenu();
     }, [decodedCategory, toast]);
 
+    /* ── Check for active order ─────────────────── */
+    useEffect(() => {
+        const checkActiveOrder = async () => {
+            try {
+                const res = await fetch("/api/orders");
+                const data = await res.json();
+                if (data?.data) {
+                    const active = (data.data as Order[]).find(
+                        (o) => o.status === "pending" || o.status === "preparing"
+                    );
+                    if (active) setActiveOrder(active);
+                }
+            } catch {
+                /* silent — not critical */
+            }
+        };
+        checkActiveOrder();
+    }, []);
+
+    /* ── Cart helpers ─────────────────────────── */
     const addToCart = (item: MenuItem) => {
         setCart((prev) => {
             const existing = prev.find((c) => c.menuItemId === item._id);
@@ -91,6 +124,7 @@ export default function CategoryMenuPage({
     );
     const totalItems = cart.reduce((sum, c) => sum + c.quantity, 0);
 
+    /* ── Place new order ──────────────────────── */
     const placeOrder = async () => {
         const tableId = localStorage.getItem("tableId");
         if (!tableId) {
@@ -111,11 +145,12 @@ export default function CategoryMenuPage({
                     customerNote: note || undefined,
                 }),
             });
-            const data = await res.json();
             if (!res.ok) {
-                toast(data?.message ?? "Order failed", "error");
+                const msg = await extractError(res, "Order failed");
+                toast(msg, "error");
                 return;
             }
+            const data = await res.json();
             toast("Order placed!", "success");
             setCart([]);
             const orderId = data?.data?._id;
@@ -128,6 +163,72 @@ export default function CategoryMenuPage({
             setSubmitting(false);
         }
     };
+
+    /* ── Add items to existing order ──────────── */
+    const addToExistingOrder = async () => {
+        if (!activeOrder || cart.length === 0) return;
+
+        setSubmitting(true);
+        try {
+            // Merge cart items with existing order items
+            const mergedItems = [...activeOrder.items];
+            for (const cartItem of cart) {
+                const existingIdx = mergedItems.findIndex(
+                    (i) => i.menuItemId === cartItem.menuItemId
+                );
+                if (existingIdx !== -1) {
+                    mergedItems[existingIdx] = {
+                        ...mergedItems[existingIdx],
+                        quantity:
+                            mergedItems[existingIdx].quantity + cartItem.quantity,
+                    };
+                } else {
+                    mergedItems.push({ ...cartItem });
+                }
+            }
+
+            const newTotal = mergedItems.reduce(
+                (sum, i) => sum + i.price * i.quantity,
+                0
+            );
+
+            const res = await fetch(`/api/orders/${activeOrder._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: mergedItems, totalAmount: newTotal }),
+            });
+
+            if (!res.ok) {
+                const msg = await extractError(res, "Failed to add items");
+                toast(msg, "error");
+                return;
+            }
+
+            toast("Items added to your order!", "success");
+            setCart([]);
+            router.push(`/customer/order/${activeOrder._id}`);
+        } catch {
+            toast("Failed to add items to order", "error");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleSubmit = () => {
+        if (activeOrder) {
+            addToExistingOrder();
+        } else {
+            placeOrder();
+        }
+    };
+
+    const buttonLabel = activeOrder
+        ? submitting
+            ? "Adding to order..."
+            : "Add to Order"
+        : submitting
+            ? "Placing order..."
+            : "Proceed to Order";
 
     return (
         <div className="mx-auto max-w-lg px-4 pt-4 pb-32">
@@ -245,7 +346,7 @@ export default function CategoryMenuPage({
                 <div className="fixed bottom-20 left-0 right-0 z-40 px-4">
                     <div className="mx-auto max-w-lg">
                         <button
-                            onClick={placeOrder}
+                            onClick={handleSubmit}
                             disabled={submitting}
                             className="flex h-14 w-full items-center justify-between rounded-2xl bg-orange-600 px-6 text-white shadow-xl transition hover:bg-orange-700 disabled:opacity-60"
                         >
@@ -254,9 +355,7 @@ export default function CategoryMenuPage({
                                     {totalItems}
                                 </span>
                                 <span className="text-sm font-semibold">
-                                    {submitting
-                                        ? "Placing order..."
-                                        : "Proceed to Order"}
+                                    {buttonLabel}
                                 </span>
                             </span>
                             <span className="text-sm font-bold">
