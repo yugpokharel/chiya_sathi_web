@@ -22,13 +22,19 @@ export default function OwnerOrders() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [tab, setTab] = useState<Tab>("pending");
     const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+    const [fetchError, setFetchError] = useState(false);
 
     const fetchOrders = useCallback(async () => {
         try {
             const res = await fetch("/api/orders");
             const data = await res.json();
-            if (data?.data) setOrders(data.data);
-        } catch {}
+            if (data?.data) {
+                setOrders(data.data);
+                setFetchError(false);
+            }
+        } catch {
+            setFetchError(true);
+        }
     }, []);
 
     useEffect(() => {
@@ -102,6 +108,18 @@ export default function OwnerOrders() {
     return (
         <div className="mx-auto max-w-lg px-4 pt-6">
             <h1 className="text-xl font-bold">Orders</h1>
+
+            {fetchError && (
+                <div className="mt-3 flex items-center justify-between rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                    <span>Failed to load orders</span>
+                    <button
+                        onClick={fetchOrders}
+                        className="rounded-lg bg-red-100 px-3 py-1 text-xs font-semibold hover:bg-red-200"
+                    >
+                        Retry
+                    </button>
+                </div>
+            )}
 
             {/* Tabs */}
             <div className="mt-4 flex gap-1 rounded-xl bg-white p-1 shadow-sm">
