@@ -72,6 +72,7 @@ export default function Header() {
 
                         <button
                             aria-expanded={menuOpen}
+                            aria-label="Toggle navigation menu"
                             onClick={() => setMenuOpen((v) => !v)}
                             className="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-black/10 text-black hover:bg-black/5"
                         >
