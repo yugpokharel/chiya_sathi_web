@@ -236,6 +236,7 @@ export default function CategoryMenuPage({
             <div className="flex items-center gap-3">
                 <button
                     onClick={() => router.back()}
+                    aria-label="Go back"
                     className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5"
                 >
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
