@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { imageUrl, STATUS_COLORS, STATUS_BG } from "@/lib/constants";
-import type { User, Order } from "@/lib/types";
+import type { User, Order, OrderStatus } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
 
 export default function OwnerHome() {
@@ -57,7 +57,7 @@ export default function OwnerHome() {
         );
     }, [orders]);
 
-    const updateStatus = async (orderId: string, status: string) => {
+    const updateStatus = async (orderId: string, status: OrderStatus) => {
         try {
             const res = await fetch(`/api/orders/${orderId}/status`, {
                 method: "PUT",

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { STATUS_COLORS, STATUS_BG } from "@/lib/constants";
-import type { Order } from "@/lib/types";
+import type { Order, OrderStatus } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
 
 type Tab = "pending" | "preparing" | "ready" | "history";
@@ -67,7 +67,7 @@ export default function OwnerOrders() {
         ).length,
     }), [orders]);
 
-    const updateStatus = async (orderId: string, status: string) => {
+    const updateStatus = async (orderId: string, status: OrderStatus) => {
         try {
             const res = await fetch(`/api/orders/${orderId}/status`, {
                 method: "PUT",
