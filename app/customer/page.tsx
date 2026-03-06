@@ -11,6 +11,7 @@ export default function CustomerHome() {
     const [tableInput, setTableInput] = useState("");
     const [showTableInput, setShowTableInput] = useState(false);
     const [activeOrder, setActiveOrder] = useState<Order | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         try {
@@ -20,6 +21,7 @@ export default function CustomerHome() {
 
         const stored = localStorage.getItem("tableId");
         if (stored) setTableId(stored);
+        setLoading(false);
     }, []);
 
     // Check for active order
@@ -52,6 +54,25 @@ export default function CustomerHome() {
             setTableInput("");
         }
     };
+
+    if (loading) {
+        return (
+            <div className="mx-auto max-w-lg px-4 pt-4">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+                    <div className="space-y-2">
+                        <div className="h-3 w-16 animate-pulse rounded bg-gray-200" />
+                        <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                    </div>
+                </div>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                    {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="h-28 animate-pulse rounded-2xl bg-gray-200" />
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto max-w-lg px-4 pt-4">
