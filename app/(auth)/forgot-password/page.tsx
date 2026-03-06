@@ -22,7 +22,6 @@ export default function ForgotPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    /* ── Step 1: Email form ───────────────────── */
     const emailForm = useForm<ForgotPasswordData>({
         resolver: zodResolver(forgotPasswordSchema),
         mode: "onSubmit",
@@ -51,7 +50,6 @@ export default function ForgotPasswordPage() {
         }
     };
 
-    /* ── OTP input helpers ────────────────────── */
     const handleOtpChange = (index: number, value: string) => {
         if (!/^\d*$/.test(value)) return;
         const next = [...otp];
@@ -80,7 +78,6 @@ export default function ForgotPasswordPage() {
 
     const otpValue = otp.join("");
 
-    /* ── Step 2: Reset password (OTP + new password) ── */
     const passwordForm = useForm<ResetPasswordData>({
         resolver: zodResolver(resetPasswordSchema),
         mode: "onSubmit",
@@ -109,7 +106,6 @@ export default function ForgotPasswordPage() {
         }
     };
 
-    /* ── Resend OTP ───────────────────────────── */
     const resendOtp = async () => {
         setServerError(null);
         setSending(true);
@@ -134,7 +130,6 @@ export default function ForgotPasswordPage() {
         }
     };
 
-    /* ── Header ───────────────────────────────── */
     const title =
         step === "email"
             ? "Forgot Password"
