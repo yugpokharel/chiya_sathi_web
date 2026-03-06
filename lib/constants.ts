@@ -1,3 +1,5 @@
+import type { OrderStatus } from "./types";
+
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://192.168.1.4:5000/api";
 export const BACKEND_ORIGIN = process.env.NEXT_PUBLIC_BACKEND_ORIGIN ?? "http://192.168.1.4:5000";
 
@@ -13,7 +15,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   Snacks: "🍽️",
 };
 
-export const STATUS_COLORS: Record<string, string> = {
+export const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-orange-100 text-orange-700 border-orange-200",
   preparing: "bg-blue-100 text-blue-700 border-blue-200",
   ready: "bg-green-100 text-green-700 border-green-200",
@@ -21,7 +23,7 @@ export const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-red-100 text-red-700 border-red-200",
 };
 
-export const STATUS_BG: Record<string, string> = {
+export const STATUS_BG: Record<OrderStatus, string> = {
   pending: "bg-orange-500",
   preparing: "bg-blue-500",
   ready: "bg-green-500",
@@ -29,7 +31,7 @@ export const STATUS_BG: Record<string, string> = {
   cancelled: "bg-red-500",
 };
 
-export const STATUS_TEXT: Record<string, string> = {
+export const STATUS_TEXT: Record<OrderStatus, string> = {
   pending: "Waiting for the shop to accept your order",
   preparing: "Your order is being prepared",
   ready: "Your order is ready! Head to the counter",
