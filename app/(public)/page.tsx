@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -31,18 +32,18 @@ export default function Home() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <a
+              <Link
                 href="/role-select"
                 className="inline-flex h-12 items-center justify-center rounded-md bg-amber-600 px-6 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
               >
                 Get started
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/role-select"
                 className="inline-flex h-12 items-center justify-center rounded-md border border-black/10 bg-white/90 px-6 text-sm font-semibold text-[#1b1b1b] shadow-sm transition hover:bg-white"
               >
                 Explore the menu
-              </a>
+              </Link>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-3">
@@ -116,9 +117,9 @@ export default function Home() {
                   </p>
                 </div>
 
-                <a href="/login" className="flex h-12 w-full items-center justify-center rounded-md bg-[#1b1b1b] text-sm font-semibold text-white hover:opacity-90">
+                <Link href="/login" className="flex h-12 w-full items-center justify-center rounded-md bg-[#1b1b1b] text-sm font-semibold text-white hover:opacity-90">
                   Quick order
-                </a>
+                </Link>
               </div>
             </div>
           </div>
