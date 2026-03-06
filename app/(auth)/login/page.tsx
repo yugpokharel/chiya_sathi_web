@@ -1,6 +1,10 @@
-
+import type { Metadata } from "next";
 import LoginForm from "../_components/Login.Form";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Sign In — ChiyaSathi",
+};
 
 export default function Page() {
     return (

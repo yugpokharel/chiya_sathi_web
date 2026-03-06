@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import RegisterForm from "../_components/Register.Form";
 import Link from "next/link";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Sign Up — ChiyaSathi",
+};
 
 export default function Page() {
     return (

@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About — ChiyaSathi",
+  description: "Learn about ChiyaSathi, the smart tea ordering platform.",
+};
+
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#f8f5ef] text-[#1b1b1b]">
