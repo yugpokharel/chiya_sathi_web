@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { imageUrl, STATUS_COLORS, STATUS_BG } from "@/lib/constants";
+import { imageUrl, STATUS_COLORS, STATUS_BG, generateBillKey } from "@/lib/constants";
 import type { User, Order, OrderStatus } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
 
@@ -11,6 +11,9 @@ export default function OwnerHome() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [cafeName, setCafeName] = useState("");
     const [loading, setLoading] = useState(true);
+    const [billKeyInput, setBillKeyInput] = useState("");
+    const [matchedOrder, setMatchedOrder] = useState<Order | null>(null);
+    const [billLookupError, setBillLookupError] = useState("");
 
     useEffect(() => {
         try {
@@ -56,6 +59,19 @@ export default function OwnerHome() {
             (o) => o.status === "pending" || o.status === "preparing"
         );
     }, [orders]);
+
+    const lookupBill = () => {
+        const key = billKeyInput.trim().toUpperCase();
+        if (!key) return;
+        setBillLookupError("");
+        setMatchedOrder(null);
+        const found = orders.find((o) => generateBillKey(o._id) === key);
+        if (found) {
+            setMatchedOrder(found);
+        } else {
+            setBillLookupError("No order found for this bill key");
+        }
+    };
 
     const updateStatus = async (orderId: string, status: OrderStatus) => {
         try {
@@ -144,6 +160,82 @@ export default function OwnerHome() {
                     <p className="mt-1 text-2xl font-bold text-green-600">
                         Rs. {todayRevenue}
                     </p>
+                </div>
+            </div>
+
+            {/* ── Verify Bill ────────────────────── */}
+            <div className="mt-6">
+                <h2 className="text-sm font-semibold text-black/70">Verify Bill</h2>
+                <div className="mt-2 rounded-2xl bg-white p-4 shadow-sm">
+                    <p className="text-xs text-black/50">Enter the customer&apos;s bill key to view their order</p>
+                    <div className="mt-3 flex gap-2">
+                        <input
+                            type="text"
+                            value={billKeyInput}
+                            onChange={(e) => {
+                                setBillKeyInput(e.target.value.toUpperCase());
+                                setBillLookupError("");
+                                setMatchedOrder(null);
+                            }}
+                            onKeyDown={(e) => e.key === "Enter" && lookupBill()}
+                            placeholder="e.g. CS-A3X7K2"
+                            className="flex-1 rounded-xl border border-black/10 px-3 py-2.5 text-sm font-mono tracking-wider placeholder:text-black/30 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                        />
+                        <button
+                            onClick={lookupBill}
+                            className="rounded-xl bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700"
+                        >
+                            Look Up
+                        </button>
+                    </div>
+                    {billLookupError && (
+                        <p className="mt-2 text-xs text-red-500">{billLookupError}</p>
+                    )}
+                    {matchedOrder && (
+                        <div className="mt-4 rounded-xl border border-orange-200 bg-orange-50 p-4">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-mono text-black/40">#{matchedOrder._id.slice(-6)}</span>
+                                <span
+                                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${STATUS_COLORS[matchedOrder.status]}`}
+                                >
+                                    <span className={`h-1.5 w-1.5 rounded-full ${STATUS_BG[matchedOrder.status]}`} />
+                                    {matchedOrder.status}
+                                </span>
+                            </div>
+                            <div className="mt-2 flex items-center justify-between">
+                                <span className="text-xs text-black/50">Table</span>
+                                <span className="rounded-lg bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700">{matchedOrder.tableId}</span>
+                            </div>
+                            <div className="mt-3 space-y-1">
+                                {matchedOrder.items.map((item, i) => (
+                                    <div key={i} className="flex justify-between text-xs">
+                                        <span className="text-black/60">{item.quantity}x {item.name}</span>
+                                        <span className="font-semibold">Rs. {item.price * item.quantity}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-2 border-t border-orange-200 pt-2 flex items-center justify-between">
+                                <span className="text-sm font-bold">Total</span>
+                                <span className="text-sm font-bold text-orange-600">Rs. {matchedOrder.totalAmount}</span>
+                            </div>
+                            <div className="mt-2 flex items-center justify-between text-[10px] text-black/40">
+                                <span>Bill Key: {generateBillKey(matchedOrder._id)}</span>
+                                <span>{new Date(matchedOrder.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
+                            </div>
+                            {matchedOrder.status === "ready" && (
+                                <button
+                                    onClick={() => {
+                                        updateStatus(matchedOrder._id, "served");
+                                        setMatchedOrder(null);
+                                        setBillKeyInput("");
+                                    }}
+                                    className="mt-3 w-full rounded-xl bg-green-600 py-2 text-xs font-semibold text-white transition hover:bg-green-700"
+                                >
+                                    Mark as Served
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 

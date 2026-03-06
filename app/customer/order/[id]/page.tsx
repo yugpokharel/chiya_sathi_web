@@ -6,6 +6,7 @@ import {
     STATUS_COLORS,
     STATUS_TEXT,
     STATUS_BG,
+    generateBillKey,
 } from "@/lib/constants";
 import type { Order, OrderStatus, OrderItem } from "@/lib/types";
 import { useToast } from "@/components/ToastProvider";
@@ -623,6 +624,10 @@ export default function OrderStatusPage({
                         </div>
                         <div className="mt-4 space-y-1 text-xs text-black/50">
                             <div className="flex justify-between">
+                                <span>Bill Key</span>
+                                <span className="font-mono font-bold text-orange-600 text-sm">{generateBillKey(order._id)}</span>
+                            </div>
+                            <div className="flex justify-between">
                                 <span>Order ID</span>
                                 <span className="font-mono">{order._id.slice(-8).toUpperCase()}</span>
                             </div>
@@ -660,7 +665,9 @@ export default function OrderStatusPage({
                             </div>
                         </div>
                         <div className="mt-4 border-t border-dashed border-black/15 pt-4 text-center">
-                            <p className="text-[10px] text-black/30">Thank you for ordering with ChiyaSathi!</p>
+                            <p className="text-xs text-black/50 font-medium">Show this key at the counter</p>
+                            <p className="mt-1 text-lg font-mono font-bold tracking-widest text-orange-600">{generateBillKey(order._id)}</p>
+                            <p className="mt-2 text-[10px] text-black/30">Thank you for ordering with ChiyaSathi!</p>
                         </div>
                     </div>
 
@@ -714,6 +721,7 @@ export default function OrderStatusPage({
                                 dangerouslySetInnerHTML={{
                                     __html: generateQrSvg(
                                         JSON.stringify({
+                                            billKey: generateBillKey(order._id),
                                             orderId: order._id,
                                             table: order.tableId,
                                             total: order.totalAmount,
@@ -725,7 +733,9 @@ export default function OrderStatusPage({
                         </div>
 
                         <div className="mt-4 space-y-1">
-                            <p className="text-xs text-black/40">Order Total</p>
+                            <p className="text-xs text-black/40">Bill Key</p>
+                            <p className="text-lg font-mono font-bold tracking-widest text-orange-600">{generateBillKey(order._id)}</p>
+                            <p className="mt-1 text-xs text-black/40">Order Total</p>
                             <p className="text-2xl font-bold text-orange-600">Rs. {order.totalAmount}</p>
                             <p className="text-xs text-black/40">Table: {order.tableId} · #{order._id.slice(-6).toUpperCase()}</p>
                         </div>

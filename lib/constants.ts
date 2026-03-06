@@ -51,3 +51,20 @@ export function imageUrl(path: string | null | undefined): string | null {
   if (path.startsWith("http")) return path;
   return `${BACKEND_ORIGIN}${path}`;
 }
+
+/** Generate a short, deterministic bill key from an order ID (e.g. "CS-A3X7K2") */
+export function generateBillKey(orderId: string): string {
+  const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I confusion
+  let hash = 0;
+  for (let i = 0; i < orderId.length; i++) {
+    hash = ((hash << 5) - hash + orderId.charCodeAt(i)) | 0;
+  }
+  const abs = Math.abs(hash) >>> 0;
+  let code = "";
+  let val = abs;
+  for (let i = 0; i < 6; i++) {
+    code += CHARS[val % CHARS.length];
+    val = Math.floor(val / CHARS.length) + orderId.charCodeAt(i % orderId.length);
+  }
+  return `CS-${code}`;
+}
