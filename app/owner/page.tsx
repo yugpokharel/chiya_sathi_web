@@ -10,6 +10,7 @@ export default function OwnerHome() {
     const [user, setUser] = useState<User | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
     const [cafeName, setCafeName] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         try {
@@ -17,6 +18,7 @@ export default function OwnerHome() {
             if (raw) setUser(JSON.parse(raw));
             setCafeName(localStorage.getItem("cafeName") ?? "");
         } catch {}
+        setLoading(false);
     }, []);
 
     const fetchOrders = useCallback(async () => {
@@ -75,6 +77,30 @@ export default function OwnerHome() {
             toast("Failed to update order", "error");
         }
     };
+
+    if (loading) {
+        return (
+            <div className="mx-auto max-w-lg px-4 pt-4">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+                    <div className="space-y-2">
+                        <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+                        <div className="h-3 w-16 animate-pulse rounded bg-gray-200" />
+                    </div>
+                </div>
+                <div className="mt-6 grid grid-cols-3 gap-3">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-20 animate-pulse rounded-2xl bg-gray-200" />
+                    ))}
+                </div>
+                <div className="mt-6 space-y-3">
+                    {[1, 2].map((i) => (
+                        <div key={i} className="h-24 animate-pulse rounded-2xl bg-gray-200" />
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto max-w-lg px-4 pt-4">
