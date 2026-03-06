@@ -6,9 +6,9 @@ const API_BASE_URL =
 export async function POST(request: Request) {
     const body = await request.json().catch(() => null);
 
-    if (!body?.email) {
+    if (!body?.email || !body?.otp) {
         return NextResponse.json(
-            { message: "Email is required" },
+            { message: "Email and OTP are required" },
             { status: 400 }
         );
     }
@@ -16,12 +16,12 @@ export async function POST(request: Request) {
     let response: Response;
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
+        const timeout = setTimeout(() => controller.abort(), 8000);
 
-        response = await fetch(`${API_BASE_URL}/forgot-password`, {
+        response = await fetch(`${API_BASE_URL}/verify-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: body.email }),
+            body: JSON.stringify({ email: body.email, otp: body.otp }),
             signal: controller.signal,
         });
 
@@ -39,13 +39,13 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
         return NextResponse.json(
-            { message: data?.message ?? "Request failed" },
+            { message: data?.message ?? "Invalid OTP" },
             { status: response.status }
         );
     }
 
     return NextResponse.json({
         ok: true,
-        message: data?.message ?? "Password reset instructions sent to your email",
+        message: data?.message ?? "OTP verified",
     });
 }

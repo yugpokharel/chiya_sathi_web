@@ -6,9 +6,9 @@ const API_BASE_URL =
 export async function POST(request: Request) {
     const body = await request.json().catch(() => null);
 
-    if (!body?.token || !body?.password) {
+    if (!body?.email || !body?.otp || !body?.password) {
         return NextResponse.json(
-            { message: "Token and new password are required" },
+            { message: "Email, OTP, and new password are required" },
             { status: 400 }
         );
     }
@@ -16,12 +16,17 @@ export async function POST(request: Request) {
     let response: Response;
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000);
+        const timeout = setTimeout(() => controller.abort(), 30000);
 
         response = await fetch(`${API_BASE_URL}/reset-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: body.token, password: body.password }),
+            body: JSON.stringify({
+                email: body.email,
+                otp: body.otp,
+                password: body.password,
+                newPassword: body.password,
+            }),
             signal: controller.signal,
         });
 
@@ -36,6 +41,7 @@ export async function POST(request: Request) {
     }
 
     const data = await response.json().catch(() => ({}));
+    console.log("[reset-password] backend responded:", response.status, JSON.stringify(data));
 
     if (!response.ok) {
         return NextResponse.json(
