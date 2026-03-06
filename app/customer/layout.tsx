@@ -47,7 +47,7 @@ export default function CustomerLayout({
             <main className="pb-20">{children}</main>
 
             {/* Bottom navigation */}
-            <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-white/95 backdrop-blur">
+            <nav aria-label="Customer navigation" className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-white/95 backdrop-blur">
                 <div className="mx-auto flex h-16 max-w-md items-center justify-around">
                     {NAV.map((item) => {
                         const active =

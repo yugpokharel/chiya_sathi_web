@@ -53,7 +53,7 @@ export default function OwnerLayout({
         <div className="min-h-screen bg-[#f8f5ef] text-[#1b1b1b]">
             <main className="pb-20">{children}</main>
 
-            <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-white/95 backdrop-blur">
+            <nav aria-label="Owner navigation" className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-white/95 backdrop-blur">
                 <div className="mx-auto flex h-16 max-w-md items-center justify-around">
                     {NAV.map((item) => {
                         const active =
