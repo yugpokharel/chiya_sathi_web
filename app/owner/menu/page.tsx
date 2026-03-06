@@ -65,6 +65,16 @@ export default function OwnerMenu() {
         }
     };
 
+    // Close modal on Escape key
+    useEffect(() => {
+        if (!modal.open) return;
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") closeModal();
+        };
+        document.addEventListener("keydown", handleKey);
+        return () => document.removeEventListener("keydown", handleKey);
+    }, [modal.open]);
+
     const handleImageChange = (file: File | null) => {
         if (formPreview && !modal.editing?.image) {
             URL.revokeObjectURL(formPreview);
@@ -273,8 +283,8 @@ export default function OwnerMenu() {
 
             {/* Modal */}
             {modal.open && (
-                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
-                    <div className="w-full max-w-lg rounded-t-3xl bg-white p-6 shadow-xl sm:rounded-3xl">
+                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={closeModal}>
+                    <div className="w-full max-w-lg rounded-t-3xl bg-white p-6 shadow-xl sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-bold">
                                 {modal.editing ? "Edit Item" : "Add Item"}
