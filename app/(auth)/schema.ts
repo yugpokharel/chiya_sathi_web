@@ -21,9 +21,7 @@ export const registerSchema = z
         email: z.string().email("Please provide valid email address"),
         password: passwordRule,
         confirmPassword: passwordRule,
-        profilePicture: z
-            .instanceof(File)
-            .optional(),
+        profilePicture: z.any().optional(),
         cafeName: z.string().optional(),
         cafeAddress: z.string().optional(),
     })
