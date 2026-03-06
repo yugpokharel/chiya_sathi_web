@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
-const CATEGORIES = [
-    { name: "Tea", icon: "☕", color: "from-amber-400 to-amber-600" },
-    { name: "Coffee", icon: "☕", color: "from-orange-400 to-orange-600" },
-    { name: "Cigarette", icon: "🚬", color: "from-gray-400 to-gray-600" },
-    { name: "Snacks", icon: "🍽️", color: "from-emerald-400 to-emerald-600" },
-];
+import { CATEGORY_DETAILS } from "@/lib/constants";
 
 export default function MenuPage() {
     return (
@@ -16,7 +10,7 @@ export default function MenuPage() {
             <p className="mt-1 text-sm text-black/60">Choose a category to browse items</p>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-                {CATEGORIES.map((cat) => (
+                {CATEGORY_DETAILS.map((cat) => (
                     <Link
                         key={cat.name}
                         href={`/customer/menu/${cat.name}`}

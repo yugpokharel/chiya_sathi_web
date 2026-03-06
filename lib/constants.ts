@@ -15,6 +15,13 @@ export const CATEGORY_ICONS: Record<string, string> = {
   Snacks: "🍽️",
 };
 
+export const CATEGORY_DETAILS = [
+  { name: "Tea", icon: "☕", color: "from-amber-400 to-amber-600" },
+  { name: "Coffee", icon: "☕", color: "from-orange-400 to-orange-600" },
+  { name: "Cigarette", icon: "🚬", color: "from-gray-400 to-gray-600" },
+  { name: "Snacks", icon: "🍽️", color: "from-emerald-400 to-emerald-600" },
+] as const;
+
 export const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-orange-100 text-orange-700 border-orange-200",
   preparing: "bg-blue-100 text-blue-700 border-blue-200",

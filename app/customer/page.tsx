@@ -2,15 +2,8 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { imageUrl } from "@/lib/constants";
+import { imageUrl, CATEGORY_DETAILS } from "@/lib/constants";
 import type { User, Order } from "@/lib/types";
-
-const CATEGORIES = [
-    { name: "Tea", icon: "☕", color: "from-amber-400 to-amber-600" },
-    { name: "Coffee", icon: "☕", color: "from-orange-400 to-orange-600" },
-    { name: "Cigarette", icon: "🚬", color: "from-gray-400 to-gray-600" },
-    { name: "Snacks", icon: "🍽️", color: "from-emerald-400 to-emerald-600" },
-];
 
 export default function CustomerHome() {
     const [user, setUser] = useState<User | null>(null);
@@ -206,7 +199,7 @@ export default function CustomerHome() {
                     Browse Menu
                 </h2>
                 <div className="grid grid-cols-2 gap-3">
-                    {CATEGORIES.map((cat) => (
+                    {CATEGORY_DETAILS.map((cat) => (
                         <Link
                             key={cat.name}
                             href={tableId ? `/customer/menu/${cat.name}` : "#"}
