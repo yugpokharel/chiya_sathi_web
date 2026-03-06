@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ChiyaSathi — Order smart. Serve faster.",
   description: "Tea shop ordering and management system",
+  openGraph: {
+    title: "ChiyaSathi — Order smart. Serve faster.",
+    description: "Tea shop ordering and management system",
+    siteName: "ChiyaSathi",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
