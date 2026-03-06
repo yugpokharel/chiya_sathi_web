@@ -12,6 +12,16 @@ import { useToast } from "@/components/ToastProvider";
 
 const STEPS = ["Placed", "Accepted", "Ready"];
 
+function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return "just now";
+    if (min < 60) return `${min}m ago`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr}h ago`;
+    return `${Math.floor(hr / 24)}d ago`;
+}
+
 function stepIndex(status: OrderStatus): number {
     switch (status) {
         case "pending":
@@ -55,6 +65,7 @@ export default function OrderStatusPage({
     const [editItems, setEditItems] = useState<OrderItem[]>([]);
     const [saving, setSaving] = useState(false);
     const [cancelling, setCancelling] = useState(false);
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
     const canEdit =
         order?.status === "pending" || order?.status === "preparing";
@@ -191,7 +202,7 @@ export default function OrderStatusPage({
         }
     };
 
-    /* ── Cancel order (with 404 fallback) ──────── */
+    /* ── Cancel order ──────────────────────────── */
     const cancelOrder = async () => {
         if (!order) return;
         setCancelling(true);
@@ -203,8 +214,8 @@ export default function OrderStatusPage({
                 body: JSON.stringify({ status: "cancelled" }),
             });
 
-            // Fallback: if /status returns 404 or 405, use PUT /orders/:id directly
-            if (res.status === 404 || res.status === 405) {
+            // Fallback: if /status fails (403, 404, 405, etc.), try PUT /orders/:id
+            if (!res.ok) {
                 res = await fetch(`/api/orders/${order._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -498,7 +509,7 @@ export default function OrderStatusPage({
                     </button>
                     {/* Cancel Order */}
                     <button
-                        onClick={cancelOrder}
+                        onClick={() => setShowCancelConfirm(true)}
                         disabled={cancelling}
                         className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-50"
                     >
@@ -514,9 +525,46 @@ export default function OrderStatusPage({
                 </div>
             )}
 
+            {/* Cancel Confirmation Dialog */}
+            {showCancelConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl animate-slide-up">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
+                                <svg viewBox="0 0 24 24" className="h-7 w-7 text-red-600" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z" />
+                                </svg>
+                            </div>
+                            <h3 className="mt-4 text-lg font-semibold">Cancel Order?</h3>
+                            <p className="mt-2 text-sm text-black/60">
+                                Are you sure you want to cancel this order? This action cannot be undone.
+                            </p>
+                        </div>
+                        <div className="mt-6 flex gap-3">
+                            <button
+                                onClick={() => setShowCancelConfirm(false)}
+                                className="flex-1 rounded-xl border border-black/10 py-3 text-sm font-semibold text-black/70 transition hover:bg-black/5"
+                            >
+                                Keep Order
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowCancelConfirm(false);
+                                    cancelOrder();
+                                }}
+                                disabled={cancelling}
+                                className="flex-1 rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
+                            >
+                                Yes, Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Order ID */}
             <p className="mt-4 text-center text-[10px] text-black/30">
-                Order ID: {order._id}
+                Order ID: {order._id} &middot; {timeAgo(order.createdAt)}
             </p>
         </div>
     );

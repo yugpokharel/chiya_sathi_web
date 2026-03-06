@@ -12,11 +12,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
@@ -26,8 +25,9 @@ body {
   min-height: 100vh;
 }
 
-html {
-  min-height: 100%;
+::selection {
+  background: #f97316;
+  color: #fff;
 }
 
 @layer utilities {

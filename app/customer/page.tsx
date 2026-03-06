@@ -201,39 +201,46 @@ export default function CustomerHome() {
             </div>
 
             {/* Browse Menu */}
-            {tableId && (
-                <div className="mt-8 space-y-3">
-                    <h2 className="text-sm font-semibold text-black/70">
-                        Browse Menu
-                    </h2>
-                    <div className="grid grid-cols-2 gap-3">
-                        {CATEGORIES.map((cat) => (
-                            <Link
-                                key={cat.name}
-                                href={`/customer/menu/${cat.name}`}
-                                className="group relative overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md"
+            <div className="mt-8 space-y-3">
+                <h2 className="text-sm font-semibold text-black/70">
+                    Browse Menu
+                </h2>
+                <div className="grid grid-cols-2 gap-3">
+                    {CATEGORIES.map((cat) => (
+                        <Link
+                            key={cat.name}
+                            href={tableId ? `/customer/menu/${cat.name}` : "#"}
+                            onClick={(e) => {
+                                if (!tableId) {
+                                    e.preventDefault();
+                                    setShowTableInput(true);
+                                }
+                            }}
+                            className={
+                                "group relative overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md" +
+                                (!tableId ? " opacity-70" : "")
+                            }
+                        >
+                            <div
+                                className={`flex h-28 flex-col items-center justify-center bg-gradient-to-br ${cat.color} text-white`}
                             >
-                                <div
-                                    className={`flex h-28 flex-col items-center justify-center bg-gradient-to-br ${cat.color} text-white`}
-                                >
-                                    <span className="text-3xl">{cat.icon}</span>
-                                    <span className="mt-2 text-sm font-semibold">
-                                        {cat.name}
-                                    </span>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
+                                <span className="text-3xl">{cat.icon}</span>
+                                <span className="mt-2 text-sm font-semibold">
+                                    {cat.name}
+                                </span>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
-            )}
+            </div>
 
             {!tableId && (
-                <div className="mt-8 rounded-2xl border border-dashed border-orange-300 bg-orange-50 p-6 text-center">
+                <div className="mt-4 rounded-2xl border border-dashed border-orange-300 bg-orange-50 p-4 text-center">
                     <p className="text-sm font-semibold text-orange-700">
-                        Enter your table number to browse the menu
+                        Set your table number to start ordering
                     </p>
                     <p className="mt-1 text-xs text-orange-600/70">
-                        Tap &quot;Enter Table Number&quot; above to get started
+                        Tap a category or &quot;Enter Table Number&quot; above
                     </p>
                 </div>
             )}

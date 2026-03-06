@@ -38,3 +38,28 @@ export const registerSchema = z
     });
 
 export type RegisterData = z.infer<typeof registerSchema>;
+
+// forgot password
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("Please provide a valid email address"),
+});
+
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+
+// reset password
+export const resetPasswordSchema = z
+    .object({
+        password: passwordRule,
+        confirmPassword: passwordRule,
+    })
+    .superRefine((data, ctx) => {
+        if (data.password !== data.confirmPassword) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["confirmPassword"],
+                message: "Passwords do not match",
+            });
+        }
+    });
+
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
