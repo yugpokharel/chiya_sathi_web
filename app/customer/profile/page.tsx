@@ -53,7 +53,7 @@ export default function CustomerProfile() {
         localStorage.removeItem("userRole");
         localStorage.removeItem("tableId");
         // Clear cookie
-        document.cookie = "auth_token=; path=/; max-age=0";
+        document.cookie = "auth_token=; path=/; max-age=0; SameSite=Lax";
         router.push("/login");
     };
 

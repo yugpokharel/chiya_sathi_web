@@ -58,7 +58,7 @@ export default function OwnerProfile() {
         localStorage.removeItem("cafeName");
         localStorage.removeItem("cafeAddress");
         localStorage.removeItem("tableId");
-        document.cookie = "auth_token=; path=/; max-age=0";
+        document.cookie = "auth_token=; path=/; max-age=0; SameSite=Lax";
         router.push("/login");
     };
 
