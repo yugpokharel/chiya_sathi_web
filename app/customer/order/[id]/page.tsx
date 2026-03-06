@@ -36,6 +36,57 @@ function stepIndex(status: OrderStatus): number {
     }
 }
 
+/** Generate a simple QR code SVG using a basic grid pattern */
+function generateQrSvg(data: string): string {
+    // Simple deterministic pattern from the data string
+    const size = 21;
+    const cells: boolean[][] = [];
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) {
+        hash = ((hash << 5) - hash + data.charCodeAt(i)) | 0;
+    }
+
+    for (let r = 0; r < size; r++) {
+        cells[r] = [];
+        for (let c = 0; c < size; c++) {
+            // Finder patterns (top-left, top-right, bottom-left)
+            const inFinderTL = r < 7 && c < 7;
+            const inFinderTR = r < 7 && c >= size - 7;
+            const inFinderBL = r >= size - 7 && c < 7;
+
+            if (inFinderTL || inFinderTR || inFinderBL) {
+                const lr = inFinderTL ? r : inFinderTR ? r : r - (size - 7);
+                const lc = inFinderTL ? c : inFinderTR ? c - (size - 7) : c;
+                cells[r][c] =
+                    lr === 0 || lr === 6 || lc === 0 || lc === 6 ||
+                    (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4);
+            } else {
+                // Data area — deterministic pseudo-random from hash
+                const seed = (hash + r * 31 + c * 17) >>> 0;
+                cells[r][c] = seed % 3 !== 0;
+            }
+        }
+    }
+
+    const cellSize = 10;
+    const margin = 40;
+    const qrSize = size * cellSize;
+    const svgSize = qrSize + margin * 2;
+    let rects = "";
+    for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+            if (cells[r][c]) {
+                rects += `<rect x="${margin + c * cellSize}" y="${margin + r * cellSize}" width="${cellSize}" height="${cellSize}" fill="#1b1b1b" rx="1"/>`;
+            }
+        }
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgSize} ${svgSize}" width="${svgSize}" height="${svgSize}">
+        <rect width="${svgSize}" height="${svgSize}" fill="white" rx="12"/>
+        ${rects}
+    </svg>`;
+}
+
 /** Safely extract an error message from any response */
 async function extractError(res: Response, fallback: string): Promise<string> {
     try {
@@ -66,6 +117,10 @@ export default function OrderStatusPage({
     const [saving, setSaving] = useState(false);
     const [cancelling, setCancelling] = useState(false);
     const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+    /* ── Bill / Payment state ─────────────────── */
+    type BillView = "none" | "bill" | "counter-qr" | "online";
+    const [billView, setBillView] = useState<BillView>("none");
 
     const canEdit =
         order?.status === "pending" || order?.status === "preparing";
@@ -494,7 +549,7 @@ export default function OrderStatusPage({
                 )}
             </div>
 
-            {/* ── Action buttons ────────────────────── */}
+            {/* ── Action buttons (pending/preparing) ──── */}
             {canEdit && !editing && (
                 <div className="mt-4 space-y-2">
                     {/* Order More */}
@@ -521,6 +576,190 @@ export default function OrderStatusPage({
                             </svg>
                         )}
                         {cancelling ? "Cancelling..." : "Cancel Order"}
+                    </button>
+                </div>
+            )}
+
+            {/* ── Ready State: Bill & Payment ─────────── */}
+            {order.status === "ready" && billView === "none" && (
+                <div className="mt-4 space-y-3">
+                    <div className="rounded-2xl bg-green-50 border border-green-200 p-5 text-center">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
+                            <svg viewBox="0 0 24 24" className="h-7 w-7 text-green-600" fill="currentColor">
+                                <path d="M9.55 17.65 4.9 13l1.4-1.4 3.25 3.25 7.55-7.55L18.5 8.7l-8.95 8.95Z" />
+                            </svg>
+                        </div>
+                        <h3 className="mt-3 text-lg font-bold text-green-800">Your order is ready!</h3>
+                        <p className="mt-1 text-sm text-green-700/70">Head to the counter to pick it up, or generate your bill below.</p>
+                    </div>
+                    <button
+                        onClick={() => setBillView("bill")}
+                        className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
+                    >
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6Zm-1 9H7v-2h6v2Zm3 4H7v-2h9v2Zm-3-8V3.5L18.5 9H13Z" />
+                        </svg>
+                        Generate Bill
+                    </button>
+                    <button
+                        onClick={() => router.push("/customer/menu")}
+                        className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-orange-200 bg-orange-50 text-sm font-semibold text-orange-600 transition hover:bg-orange-100"
+                    >
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z" />
+                        </svg>
+                        Order More?
+                    </button>
+                </div>
+            )}
+
+            {/* ── Bill View ────────────────────────── */}
+            {order.status === "ready" && billView === "bill" && (
+                <div className="mt-4 space-y-3">
+                    <div className="rounded-2xl bg-white border border-black/10 p-6 shadow-sm">
+                        <div className="text-center border-b border-dashed border-black/15 pb-4">
+                            <h3 className="text-lg font-bold">ChiyaSathi</h3>
+                            <p className="text-xs text-black/50 mt-1">Your Tea Companion</p>
+                        </div>
+                        <div className="mt-4 space-y-1 text-xs text-black/50">
+                            <div className="flex justify-between">
+                                <span>Order ID</span>
+                                <span className="font-mono">{order._id.slice(-8).toUpperCase()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Table</span>
+                                <span className="font-semibold">{order.tableId}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Date</span>
+                                <span>{new Date(order.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Time</span>
+                                <span>{new Date(order.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
+                            </div>
+                        </div>
+                        <div className="mt-4 border-t border-dashed border-black/15 pt-4">
+                            <div className="flex justify-between text-[10px] uppercase tracking-wider text-black/40 font-semibold mb-2">
+                                <span>Item</span>
+                                <span>Amount</span>
+                            </div>
+                            {order.items.map((item, i) => (
+                                <div key={i} className="flex items-center justify-between text-sm py-1">
+                                    <span className="text-black/70">
+                                        {item.quantity} × {item.name}
+                                    </span>
+                                    <span className="font-semibold">Rs. {item.price * item.quantity}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-3 border-t border-dashed border-black/15 pt-3">
+                            <div className="flex items-center justify-between text-base font-bold">
+                                <span>Total</span>
+                                <span className="text-orange-600">Rs. {order.totalAmount}</span>
+                            </div>
+                        </div>
+                        <div className="mt-4 border-t border-dashed border-black/15 pt-4 text-center">
+                            <p className="text-[10px] text-black/30">Thank you for ordering with ChiyaSathi!</p>
+                        </div>
+                    </div>
+
+                    {/* Payment Options */}
+                    <div className="space-y-2">
+                        <p className="text-center text-xs font-semibold text-black/50 uppercase tracking-wider">How would you like to pay?</p>
+                        <button
+                            onClick={() => setBillView("counter-qr")}
+                            className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
+                        >
+                            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                                <path d="M3 11h8V3H3v8Zm2-6h4v4H5V5Zm8-2v8h8V3h-8Zm6 6h-4V5h4v4ZM3 21h8v-8H3v8Zm2-6h4v4H5v-4Zm13-2h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3Z" />
+                            </svg>
+                            Pay at Counter
+                        </button>
+                        <button
+                            onClick={() => setBillView("online")}
+                            className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-orange-200 bg-orange-50 text-sm font-semibold text-orange-600 transition hover:bg-orange-100"
+                        >
+                            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 14H4V6h16v12ZM4 0h16v2H4V0Zm0 22h16v2H4v-2Zm8-10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-4 4h8c0-2.21-1.79-4-4-4s-4 1.79-4 4Z" />
+                            </svg>
+                            Pay Online
+                        </button>
+                        <button
+                            onClick={() => setBillView("none")}
+                            className="flex h-10 w-full items-center justify-center text-xs font-medium text-black/40 transition hover:text-black/60"
+                        >
+                            ← Back
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Counter QR View ──────────────────── */}
+            {order.status === "ready" && billView === "counter-qr" && (
+                <div className="mt-4 space-y-3">
+                    <div className="rounded-2xl bg-white border border-black/10 p-6 shadow-sm text-center">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange-100">
+                            <svg viewBox="0 0 24 24" className="h-7 w-7 text-orange-600" fill="currentColor">
+                                <path d="M3 11h8V3H3v8Zm2-6h4v4H5V5Zm8-2v8h8V3h-8Zm6 6h-4V5h4v4ZM3 21h8v-8H3v8Zm2-6h4v4H5v-4Zm13-2h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3Z" />
+                            </svg>
+                        </div>
+                        <h3 className="mt-3 text-lg font-bold">Pay at Counter</h3>
+                        <p className="mt-1 text-sm text-black/50">Show this QR code at the counter to complete your payment.</p>
+
+                        {/* QR Code */}
+                        <div className="mt-5 flex justify-center">
+                            <div
+                                className="rounded-xl border-2 border-black/5 p-2"
+                                dangerouslySetInnerHTML={{
+                                    __html: generateQrSvg(
+                                        JSON.stringify({
+                                            orderId: order._id,
+                                            table: order.tableId,
+                                            total: order.totalAmount,
+                                            items: order.items.length,
+                                        })
+                                    ),
+                                }}
+                            />
+                        </div>
+
+                        <div className="mt-4 space-y-1">
+                            <p className="text-xs text-black/40">Order Total</p>
+                            <p className="text-2xl font-bold text-orange-600">Rs. {order.totalAmount}</p>
+                            <p className="text-xs text-black/40">Table: {order.tableId} · #{order._id.slice(-6).toUpperCase()}</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setBillView("bill")}
+                        className="flex h-10 w-full items-center justify-center text-xs font-medium text-black/40 transition hover:text-black/60"
+                    >
+                        ← Back to Bill
+                    </button>
+                </div>
+            )}
+
+            {/* ── Pay Online (Placeholder) ─────────── */}
+            {order.status === "ready" && billView === "online" && (
+                <div className="mt-4 space-y-3">
+                    <div className="rounded-2xl bg-white border border-black/10 p-6 shadow-sm text-center">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100">
+                            <svg viewBox="0 0 24 24" className="h-7 w-7 text-blue-600" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 14H4V6h16v12ZM4 0h16v2H4V0Zm0 22h16v2H4v-2Z" />
+                            </svg>
+                        </div>
+                        <h3 className="mt-3 text-lg font-bold">Pay Online</h3>
+                        <p className="mt-2 text-sm text-black/50">Online payment is coming soon! Please pay at the counter for now.</p>
+                        <div className="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4">
+                            <p className="text-xs text-blue-600 font-medium">💡 We&apos;re working on integrating digital payment options. Stay tuned!</p>
+                        </div>
+                        <p className="mt-3 text-2xl font-bold text-orange-600">Rs. {order.totalAmount}</p>
+                    </div>
+                    <button
+                        onClick={() => setBillView("bill")}
+                        className="flex h-10 w-full items-center justify-center text-xs font-medium text-black/40 transition hover:text-black/60"
+                    >
+                        ← Back to Bill
                     </button>
                 </div>
             )}
